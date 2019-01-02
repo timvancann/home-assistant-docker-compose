@@ -93,7 +93,7 @@ server {
 }
 ```
 
-Without this nginx won't forward the DNS subdomain to Home Assistant. Replace `<your-dns>` and `<host-ip>` with your values. For every subdomain (perhaps you want to expose mqtt!?) you can add above configuration and add it to the SUBDOMAINS list, i.e.:
+Without this nginx won't forward the DNS subdomain to Home Assistant. Replace `<your-dns>` and `<host-ip>` with your values. For every subdomain (perhaps you want to expose mqtt!?) you can add above configuration for each subdomain and add it to the SUBDOMAINS list, i.e.:
 ```yaml
 - SUBDOMAINS=hass,mqtt,other
 ```
