@@ -1,0 +1,99 @@
+version: '3'
+services:
+
+  postgres:
+    container_name: postgres
+    image: postgres:11.1
+    restart: always
+    network_mode: host
+    ports:
+      - "5234:5234"
+    environment:
+      POSTGRES_USER: homeassistant
+      POSTGRES_PASSWORD: <redacted>
+    volumes:
+      - /home/<user>/.postgres:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+
+  influxdb:
+    container_name: influxdb
+    image: influxdb:1.7.1
+    restart: unless-stopped
+    network_mode: host
+    ports:
+      - "8086:8086"
+      - "8083:8083"
+    environment:
+      INFLUXDB_DB: homeassistant
+      INFLUXDB_USER: homeassistant
+      INFLUXDB_USER_PASSWORD: <redacted>
+    volumes:
+      - /home/<user>/.influxdb:/var/lib/influxdb
+      - /etc/localtime:/etc/localtime:ro
+
+  grafana:
+    depends_on:
+      - influxdb
+    image: grafana/grafana:latest
+    container_name: grafana
+    network_mode: host
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,briangann-gauge-panel,natel-plotly-panel,grafana-simple-json-datasource
+    volumes:
+      - /home/<user>/.grafana:/var/lib/grafana
+
+  homeassistant:
+    depends_on:
+      - postgres
+      - influxdb
+    container_name: home-assistant
+    image: homeassistant/home-assistant:latest
+    restart: always
+    privileged: true
+    command: [ "python", "-m", "homeassistant", "--config", "/config", "--log-rotate-days", '3' ]
+    network_mode: host
+    volumes:
+      - /home/<user>/.homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    ports:
+      - "8123:8123"
+      - "8943:8943"
+    devices:
+      - /dev/ttyUSB0
+      - /dev/ttyUSB1
+      - /dev/ttyACM0
+
+  letsencrypt:
+    container_name: lets-encrypt
+    image: linuxserver/letsencrypt
+    restart: always
+    cap_add:
+    - NET_ADMIN
+    network_mode: host
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /home/<user>/.letsencrypt/config:/config
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - PGID=1000
+      - PUID=1000
+      - EMAIL=<email>
+      - URL=<url>
+      - SUBDOMAINS=hass
+      - VALIDATION=http
+
+  nodered:
+    container_name: nodered
+    image: nodered/node-red-docker:latest
+    network_mode: host
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /home/<user>/.nodered/:/data
+    ports:
+      - "1880:1880"
+    user: 'root'
