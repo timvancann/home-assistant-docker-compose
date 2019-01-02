@@ -7,7 +7,6 @@ It contains the following components:
 - [Postgresql](https://hub.docker.com/_/postgres). The database Home Assistant should use
 - [InfluxDB](https://hub.docker.com/_/influxdb). The database Home Assistant writes sensory information to such that Grafana can read it
 - [Grafana](https://hub.docker.com/r/grafana/grafana). Dashboarding
-- [Mosquitto](https://hub.docker.com/_/eclipse-mosquitto). MQTT server
 - [LetsEncrypt](https://hub.docker.com/r/linuxserver/letsencrypt). Service to setup and maintain SSL for Home Assistant
 - [Node Red](https://hub.docker.com/r/nodered/node-red-docker): Alternative for the yaml automations in Home Assistant
 
