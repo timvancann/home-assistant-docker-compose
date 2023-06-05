@@ -1,6 +1,9 @@
 # Home Assistant docker-compose
 
-This is my setup for home assistant using docker-compose. This is tested and runs fine on any Ubuntu distribution from 16.04 onwards.
+This is @timvancann's setup for home assistant using docker-compose. I forked it and am
+going to use kompose to convert to a k8s config that runs on both minikube and aws eks.
+
+Everything below here is from the original work, going to update as I make progress:
 
 It contains the following components:
 - [Home Assistant](https://hub.docker.com/r/homeassistant/home-assistant/) (duh)
